@@ -1,86 +1,89 @@
-# Claude Code Development Guide
+# Development Environment Setup Guide
 
-This guide provides detailed instructions for setting up and working with the Claude Code development environment.
+This document provides detailed instructions for setting up and running the Claude Code development environment.
 
 ## Prerequisites
 
-- Docker Desktop installed and running
-- Node.js 18+ installed
-- Git installed
-- macOS 10.15+, Ubuntu 20.04+/Debian 10+, or Windows via WSL
-- 4GB RAM minimum
-- Internet connection for authentication and AI processing
+- Docker installed and running on your system
+- Node.js and npm installed (for CLI tool installation)
+- Git for version control
+- An Anthropic account with either:
+  - Claude subscription (Pro: $20/mo or Max: $100/mo)
+  - Anthropic Console account for API usage
 
 ## Development Container Setup
 
-### 1. Clone the Repository
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/stix26/claude-code.git
+   cd claude-code
+   ```
 
+2. Build the development container:
+   ```bash
+   docker build -t claude-code-dev --build-arg TZ=America/Los_Angeles .devcontainer/
+   ```
+
+3. Run the container with necessary capabilities:
+   ```bash
+   docker run -it --cap-add=NET_ADMIN --cap-add=NET_RAW claude-code-dev
+   ```
+
+## CLI Tool Installation
+
+Install the Claude Code CLI tool globally:
 ```bash
-git clone https://github.com/stix26/claude-code.git
-cd claude-code
+npm install -g @anthropic-ai/claude-code
 ```
 
-### 2. Build the Development Container
+## Authentication Setup
 
-```bash
-docker build -t claude-code-dev --build-arg TZ=America/Los_Angeles .devcontainer/
-```
+1. Choose your authentication method:
+   - Claude subscription through Anthropic website
+   - Anthropic Console account for API access
 
-This container includes:
-- Node.js 20 base image
-- Development tools and networking utilities
-- Custom shell configuration (zsh + powerline10k)
-- VS Code extensions (ESLint, Prettier, GitLens)
-- Networking tools for advanced features
+2. Configure your credentials according to your chosen method:
+   - For Claude subscription: Log in through the web interface
+   - For API usage: Set up your API key in the appropriate configuration file
 
-### 3. Run the Development Container
+## Development Workflow
 
-```bash
-docker run -it \
-  --cap-add=NET_ADMIN \
-  --cap-add=NET_RAW \
-  -v "$(pwd):/workspace" \
-  -v claude-code-bashhistory:/commandhistory \
-  -v claude-code-config:/home/node/.claude \
-  claude-code-dev
-```
+1. Make your changes in the development container
+2. Test changes locally
+3. Submit pull requests for review
 
-## Container Features
+## Common Issues and Solutions
 
-### VS Code Integration
-- ESLint for linting
-- Prettier for code formatting
-- GitLens for Git integration
+### Permission Issues
+If you encounter permission issues while editing files:
+1. Check your Docker container user permissions
+2. Ensure proper file ownership in mounted volumes
+3. Use appropriate sudo commands when necessary
 
-### Shell Configuration
-- zsh with powerline10k theme
-- Git integration
-- FZF for fuzzy finding
-- Custom prompt and history
+### Network Issues
+If you experience network-related problems:
+1. Verify Docker network settings
+2. Check if NET_ADMIN and NET_RAW capabilities are properly set
+3. Confirm firewall settings are not blocking required ports
 
-### Networking Features
-- iptables/ipset for network management
-- Custom firewall configuration
-- DNS utilities
+## Contributing
 
-## Troubleshooting
+1. Create a new branch for your feature/fix
+2. Make your changes
+3. Test thoroughly
+4. Submit a pull request
+5. Await review and address any feedback
 
-### Common Issues
+## Building for Production
 
-1. Docker Permission Issues
-   - Ensure Docker Desktop is running
-   - Check user permissions for Docker socket
+1. Ensure all tests pass
+2. Update documentation as needed
+3. Follow semantic versioning guidelines
+4. Create a release PR
 
-2. Volume Mount Issues
-   - Ensure source directories exist
-   - Check Docker volume permissions
+## Support
 
-3. Network Capability Issues
-   - Verify Docker has necessary permissions
-   - Check firewall settings
-
-## Getting Help
-
-- Use `/bug` command in Claude Code
-- Check [official documentation](https://docs.anthropic.com/claude-code)
-- File issues on GitHub
+For additional help:
+- Check existing GitHub issues
+- Create a new issue for bugs or feature requests
+- Refer to the main README.md for general information
